@@ -34,7 +34,7 @@ public class Employe implements Serializable {
 	
 	private String nom;
 	
-	//@Column(unique=true)
+	////@Column(unique=true)
 	private String email;
 
 	private boolean isActif;
