@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +32,28 @@ public class EmployeServiceImpl implements IEmployeService {
 	ContratRepository contratRepoistory;
 	@Autowired
 	TimesheetRepository timesheetRepository;
+	
+	private static final Logger l = LogManager.getLogger(EmployeServiceImpl.class);
 
 	public int ajouterEmploye(Employe employe) {
+		l.info("Dans la fonction ajouterEmploye");
+		l.debug("Je m'apprete à enregistrer l'employe");
 		employeRepository.save(employe);
+		l.info("Success");
 		return employe.getId();
 	}
 
 	public void mettreAjourEmailByEmployeId(String email, int employeId) {
+		l.info("Dans la fonction mettreAjourEmailByEmployeId");
+		l.debug("Je m'apprete à recherhcer l'employe selon id");
 		Employe employe = employeRepository.findById(employeId).get();
+		l.info("Fin de la recherche");
+		l.debug("Je met à jour l'email");
 		employe.setEmail(email);
+		l.info("Success");
+		l.debug("Reenregistrement de l'employé");
 		employeRepository.save(employe);
+		l.info("Succcesss");
 
 	}
 
