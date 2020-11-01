@@ -89,11 +89,18 @@ public class EmployeServiceImpl implements IEmployeService {
 	@Transactional
 	public void desaffecterEmployeDuDepartement(int employeId, int depId)
 	{
+		l.info("Dans la methode desaffecterEmployeDuDepartement");
+		l.debug("Je cherche le departement");
 		Departement dep = deptRepoistory.findById(depId).get();
-
+		l.info("Success");
+		l.debug("Je compte le nombre d'etudiants");
 		int employeNb = dep.getEmployes().size();
+		l.info("Sucesss");
+		l.debug("Je vais rentrer dans la boucle for");
 		for(int index = 0; index < employeNb; index++){
+			l.info("Dans la boucle");
 			if(dep.getEmployes().get(index).getId() == employeId){
+				l.info("Dans le if");
 				dep.getEmployes().remove(index);
 				break;//a revoir
 			}
@@ -115,21 +122,28 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public String getEmployePrenomById(int employeId) {
+		l.info("Dans la methode getEmployePrenomById");
+		l.debug("Je recherhe l'employé selon son id");
 		Employe employeManagedEntity = employeRepository.findById(employeId).get();
 		return employeManagedEntity.getPrenom();
 	}
 	public void deleteEmployeById(int employeId)
 	{
+		l.info("Dans la methode deleteEmployeById");
+		l.debug("Je recherhe l'employé selon son id");
 		Employe employe = employeRepository.findById(employeId).get();
-
+		l.info("Success");
 		//Desaffecter l'employe de tous les departements
 		//c'est le bout master qui permet de mettre a jour
 		//la table d'association
+		l.debug("Je rentre dans la boucle");
 		for(Departement dep : employe.getDepartements()){
 			dep.getEmployes().remove(employe);
 		}
-
+		l.info("Suis sorti de la boucle");
+		l.debug("Je supprime l'employe");
 		employeRepository.delete(employe);
+		l.info("Successs");
 	}
 
 	public void deleteContratById(int contratId) {
@@ -139,10 +153,14 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public int getNombreEmployeJPQL() {
+		l.info("Dans la methode getNombreEmployeJPQL");
+		l.debug("Je lance la fonction getNombreEmployeJPQL Puis je retourne le resultat");
 		return employeRepository.countemp();
 	}
 	
 	public List<String> getAllEmployeNamesJPQL() {
+		l.info("Dans la methode getAllEmployeNamesJPQL");
+		l.debug("Je lance la fonction getAllEmployeNamesJPQL Puis je retourne le resultat");
 		return employeRepository.employeNames();
 
 	}
@@ -152,6 +170,8 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public void mettreAjourEmailByEmployeIdJPQL(String email, int employeId) {
+		l.info("Dans la methode mettreAjourEmailByEmployeIdJPQL");
+		l.debug("Je lance la fonction mettreAjourEmailByEmployeIdJPQL Puis je retourne le resultat");
 		employeRepository.mettreAjourEmailByEmployeIdJPQL(email, employeId);
 
 	}
@@ -160,6 +180,8 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 	
 	public float getSalaireByEmployeIdJPQL(int employeId) {
+		l.info("Dans la methode getSalaireByEmployeIdJPQL");
+		l.debug("Je lance la fonction getSalaireByEmployeIdJPQL Puis je retourne le resultat");
 		return employeRepository.getSalaireByEmployeIdJPQL(employeId);
 	}
 
@@ -173,6 +195,9 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public List<Employe> getAllEmployes() {
+		l.info("Dans la methode getAllEmployes()");
+		l.debug("Je lance la fonction findALL Puis je retourne le resultat");
+
 				return (List<Employe>) employeRepository.findAll();
 	}
 
