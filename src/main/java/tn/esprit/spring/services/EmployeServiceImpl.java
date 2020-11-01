@@ -59,20 +59,32 @@ public class EmployeServiceImpl implements IEmployeService {
 
 	@Transactional	
 	public void affecterEmployeADepartement(int employeId, int depId) {
+		l.info("Dans la methode affecterEmployeADepartement");
+		l.debug("Je cherche le departement");
 		Departement depManagedEntity = deptRepoistory.findById(depId).get();
+		l.info("Success !");
+		l.debug("Je cherche l'employe");
 		Employe employeManagedEntity = employeRepository.findById(employeId).get();
-
+		l.info("Success !");
+		l.info("Je vais rentrer dans le if ou le else");
 		if(depManagedEntity.getEmployes() == null){
-
+			l.info("Je suis dans le if");
+			l.debug("Je crée une nouvelle liste");
 			List<Employe> employes = new ArrayList<>();
+			l.info("Success !");
+			l.debug("j'ajoute l'employe");
 			employes.add(employeManagedEntity);
+			l.info("Success !");
+			l.debug("j'ajoute la liste des employes dans le departement");
 			depManagedEntity.setEmployes(employes);
+			l.info("Success !");
+			l.info("Jai fini, je sors donc du if et de la fonction");
 		}else{
-
+			l.info("Je suis dans le else");
+			l.debug("J'ajoute l'employe");
 			depManagedEntity.getEmployes().add(employeManagedEntity);
-
+			l.info("Jai fini, je sors donc du else et de la fonction");
 		}
-
 	}
 	@Transactional
 	public void desaffecterEmployeDuDepartement(int employeId, int depId)
