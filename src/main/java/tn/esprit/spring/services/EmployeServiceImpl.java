@@ -1,4 +1,4 @@
-package tn.esprit.spring.services;
+ package tn.esprit.spring.services;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +43,7 @@ public class EmployeServiceImpl implements IEmployeService {
 		return employe.getId();
 	}
 
-	public void mettreAjourEmailByEmployeId(String email, int employeId) {
+	public String mettreAjourEmailByEmployeId(String email, int employeId) {
 		l.info("Dans la fonction mettreAjourEmailByEmployeId");
 		l.debug("Je m'apprete à recherhcer l'employe selon id");
 		Employe employe = employeRepository.findById(employeId).get();
@@ -54,6 +54,7 @@ public class EmployeServiceImpl implements IEmployeService {
 		l.debug("Reenregistrement de l'employé");
 		employeRepository.save(employe);
 		l.info("Succcesss");
+		return employe.getEmail();
 
 	}
 
@@ -125,6 +126,7 @@ public class EmployeServiceImpl implements IEmployeService {
 		l.info("Dans la methode getEmployePrenomById");
 		l.debug("Je recherhe l'employé selon son id");
 		Employe employeManagedEntity = employeRepository.findById(employeId).get();
+		l.info("Emplooyé recupéré");
 		return employeManagedEntity.getPrenom();
 	}
 	public void deleteEmployeById(int employeId)
