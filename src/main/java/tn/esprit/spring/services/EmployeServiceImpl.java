@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,8 @@ public class EmployeServiceImpl implements IEmployeService {
 	ContratRepository contratRepoistory;
 	@Autowired
 	TimesheetRepository timesheetRepository;
+	
+	private static final Logger L = LogManager.getLogger(EmployeServiceImpl.class);
 
 	public int ajouterEmploye(Employe employe) {
 		employeRepository.save(employe);
@@ -75,16 +79,25 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public int ajouterContrat(Contrat contrat) {
+		L.info("in function ajouterContrat");
+		L.debug("lunch function ajouterContrat");
 		contratRepoistory.save(contrat);
+		L.info("out of ajouterContrat");
 		return contrat.getReference();
 	}
 
 	public void affecterContratAEmploye(int contratId, int employeId) {
+		L.info("in function affecterContratAEmploye");
+		L.debug("lunch function affecterContratAEmploye");
 		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
 		Employe employeManagedEntity = employeRepository.findById(employeId).get();
 
 		contratManagedEntity.setEmploye(employeManagedEntity);
+
 		contratRepoistory.save(contratManagedEntity);
+		L.info("out of affecterContratAEmploye");
+
+
 		
 	}
 
@@ -94,6 +107,7 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 	public void deleteEmployeById(int employeId)
 	{
+		
 		Employe employe = employeRepository.findById(employeId).get();
 
 		//Desaffecter l'employe de tous les departements
@@ -107,8 +121,15 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public void deleteContratById(int contratId) {
+		L.info("in function deleteContratById");
+		L.debug("lunch function deleteContratById");
+		
 		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
+
 		contratRepoistory.delete(contratManagedEntity);
+		L.info("out of deleteContratById");
+
+
 
 	}
 
@@ -130,7 +151,11 @@ public class EmployeServiceImpl implements IEmployeService {
 
 	}
 	public void deleteAllContratJPQL() {
+		L.info("in function deleteAllContratJPQL()");
+		L.debug("lunch function deleteAllContratJPQL()");
          employeRepository.deleteAllContratJPQL();
+ 		L.info("out of deleteAllContratJPQL()");
+
 	}
 	
 	public float getSalaireByEmployeIdJPQL(int employeId) {
