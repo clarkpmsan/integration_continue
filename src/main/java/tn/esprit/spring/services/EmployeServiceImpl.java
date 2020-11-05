@@ -181,6 +181,7 @@ public class EmployeServiceImpl implements IEmployeService {
 		if(opt.isPresent()){
 		Contrat contratManagedEntity = opt.get();
 		contratRepoistory.delete(contratManagedEntity);}
+		
 
 	}
 
