@@ -28,12 +28,12 @@ public class ContratTest {
 	@Test
 	public void testaffecterContratAEmploye(){
 		
-		ie.affecterContratAEmploye(1,1);
+		ie.affecterContratAEmploye(15,1);
 	}
 	
 	@Test
 	public void testdeleteContratById(){
-		ie.deleteContratById(4);
+		ie.deleteContratById(15);
 	}
 	
 	@Test
