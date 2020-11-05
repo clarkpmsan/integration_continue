@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,22 +40,26 @@ public class EmployeServiceImpl implements IEmployeService {
 		l.info("Dans la fonction ajouterEmploye");
 		l.debug("Je m'apprete à enregistrer l'employe");
 		employeRepository.save(employe);
-		l.info("Success");
 		return employe.getId();
 	}
 
 	public String mettreAjourEmailByEmployeId(String email, int employeId) {
 		l.info("Dans la fonction mettreAjourEmailByEmployeId");
 		l.debug("Je m'apprete à recherhcer l'employe selon id");
-		Employe employe = employeRepository.findById(employeId).get();
-		l.info("Fin de la recherche");
-		l.debug("Je met à jour l'email");
-		employe.setEmail(email);
-		l.info("Success");
-		l.debug("Reenregistrement de l'employé");
-		employeRepository.save(employe);
-		l.info("Succcesss");
-		return employe.getEmail();
+		
+		Optional<Employe> optional = employeRepository.findById(employeId);
+		if(optional.isPresent()){
+			Employe employe = optional.get();
+			l.info("Fin de la recherche");
+			l.debug("Je met à jour l'email");
+			employe.setEmail(email);
+			l.debug("Reenregistrement de l'employé");
+			employeRepository.save(employe);
+			l.info("Succcesss");
+			return employe.getEmail();
+		}
+		
+		return null; 
 
 	}
 
@@ -62,41 +67,44 @@ public class EmployeServiceImpl implements IEmployeService {
 	public void affecterEmployeADepartement(int employeId, int depId) {
 		l.info("Dans la methode affecterEmployeADepartement");
 		l.debug("Je cherche le departement");
-		Departement depManagedEntity = deptRepoistory.findById(depId).get();
-		l.info("Success !");
-		l.debug("Je cherche l'employe");
-		Employe employeManagedEntity = employeRepository.findById(employeId).get();
-		l.info("Success !");
-		l.info("Je vais rentrer dans le if ou le else");
-		if(depManagedEntity.getEmployes() == null){
-			l.info("Je suis dans le if");
-			l.debug("Je crée une nouvelle liste");
-			List<Employe> employes = new ArrayList<>();
-			l.info("Success !");
-			l.debug("j'ajoute l'employe");
-			employes.add(employeManagedEntity);
-			l.info("Success !");
-			l.debug("j'ajoute la liste des employes dans le departement");
-			depManagedEntity.setEmployes(employes);
-			l.info("Success !");
-			l.info("Jai fini, je sors donc du if et de la fonction");
-		}else{
-			l.info("Je suis dans le else");
-			l.debug("J'ajoute l'employe");
-			depManagedEntity.getEmployes().add(employeManagedEntity);
-			l.info("Jai fini, je sors donc du else et de la fonction");
+		Optional<Departement> optionaldep = deptRepoistory.findById(depId);
+		Optional<Employe> optionalempl = employeRepository.findById(employeId);
+		if(optionaldep.isPresent() && optionalempl.isPresent()){
+			
+			Departement depManagedEntity = optionaldep.get();
+			l.debug("Je cherche l'employe");
+			Employe employeManagedEntity = optionalempl.get();
+			l.info("Je vais rentrer dans le if ou le else");
+			if(depManagedEntity.getEmployes() == null){
+				l.info("Je suis dans le if");
+				l.debug("Je crée une nouvelle liste");
+				List<Employe> employes = new ArrayList<>();
+				l.debug("j'ajoute l'employe");
+				employes.add(employeManagedEntity);
+				l.info("Success !");
+				l.debug("j'ajoute la liste des employes dans le departement");
+				depManagedEntity.setEmployes(employes);
+				l.info("Success !");
+				l.info("Jai fini, je sors donc du if et de la fonction");
+			}else{
+				l.info("Je suis dans le else");
+				l.debug("J'ajoute l'employe");
+				depManagedEntity.getEmployes().add(employeManagedEntity);
+				l.info("Jai fini, je sors donc du else et de la fonction");
+			}
 		}
+		
 	}
 	@Transactional
 	public void desaffecterEmployeDuDepartement(int employeId, int depId)
 	{
 		l.info("Dans la methode desaffecterEmployeDuDepartement");
 		l.debug("Je cherche le departement");
-		Departement dep = deptRepoistory.findById(depId).get();
-		l.info("Success");
+		Optional<Departement> optionaldep = deptRepoistory.findById(depId);
+		if(optionaldep.isPresent()){
+		Departement dep = optionaldep.get();
 		l.debug("Je compte le nombre d'etudiants");
 		int employeNb = dep.getEmployes().size();
-		l.info("Sucesss");
 		l.debug("Je vais rentrer dans la boucle for");
 		for(int index = 0; index < employeNb; index++){
 			l.info("Dans la boucle");
@@ -106,6 +114,7 @@ public class EmployeServiceImpl implements IEmployeService {
 				break;//a revoir
 			}
 		}
+		}
 	}
 
 	public int ajouterContrat(Contrat contrat) {
@@ -114,27 +123,40 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public void affecterContratAEmploye(int contratId, int employeId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
-		Employe employeManagedEntity = employeRepository.findById(employeId).get();
-
+		
+		Optional<Contrat> optcont= contratRepoistory.findById(contratId);
+		Optional<Employe> optemp = employeRepository.findById(employeId);
+		if(optcont.isPresent() && optemp.isPresent()){
+			Contrat contratManagedEntity = optcont.get();
+			Employe employeManagedEntity = optemp.get();
 		contratManagedEntity.setEmploye(employeManagedEntity);
 		contratRepoistory.save(contratManagedEntity);
+		
+		}
 		
 	}
 
 	public String getEmployePrenomById(int employeId) {
 		l.info("Dans la methode getEmployePrenomById");
 		l.debug("Je recherhe l'employé selon son id");
-		Employe employeManagedEntity = employeRepository.findById(employeId).get();
+		Optional <Employe> opt = employeRepository.findById(employeId);
+		if(opt.isPresent()){
+		Employe employeManagedEntity = opt.get();
 		l.info("Emplooyé recupéré");
-		return employeManagedEntity.getPrenom();
+		return employeManagedEntity.getPrenom();}
+		else{
+			return null;
+		}
+		
 	}
 	public void deleteEmployeById(int employeId)
 	{
 		l.info("Dans la methode deleteEmployeById");
 		l.debug("Je recherhe l'employé selon son id");
-		Employe employe = employeRepository.findById(employeId).get();
-		l.info("Success");
+		
+		Optional <Employe> opt = employeRepository.findById(employeId);
+		if(opt.isPresent()){
+		Employe employe = opt.get();
 		//Desaffecter l'employe de tous les departements
 		//c'est le bout master qui permet de mettre a jour
 		//la table d'association
@@ -145,12 +167,20 @@ public class EmployeServiceImpl implements IEmployeService {
 		l.info("Suis sorti de la boucle");
 		l.debug("Je supprime l'employe");
 		employeRepository.delete(employe);
-		l.info("Successs");
+		l.info("Out of delet EmployeId");}
+		
+		else{
+			
+			l.info("Aucune suppression, id inexistant");
+			l.error("Erreur");
+		}
 	}
 
 	public void deleteContratById(int contratId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
-		contratRepoistory.delete(contratManagedEntity);
+		Optional <Contrat> opt = contratRepoistory.findById(contratId);
+		if(opt.isPresent()){
+		Contrat contratManagedEntity = opt.get();
+		contratRepoistory.delete(contratManagedEntity);}
 
 	}
 
